@@ -1,0 +1,118 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  id: ID!
+  name: String!
+  type: String!
+  icon: String
+  iconUrl: String
+  isActive: Boolean!
+  imageUrl: String
+}
+
+type Account {
+  id: ID!
+  name: String!
+  type: AccountType!
+  balanceInCents: Int!
+  balance: Float
+  currency: String!
+  notes: String
+}
+
+enum AccountType {
+  CASH
+  CREDIT
+  DEBIT
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+}
+
+type TokenResponse {
+  accessToken: String!
+}
+
+type Query {
+  categories: [Category!]!
+  getCategory(id: ID!): Category!
+  accounts: [Account!]!
+  account(id: Int!): Account!
+  user(id: Int!): User!
+}
+
+type Mutation {
+  createCategory(category: CreateCategoryInput!, file: Upload): Category!
+  updateCategory(id: ID!, category: UpdateCategoryInput!, file: Upload): Category!
+  delete(id: ID!): String!
+  deactive(id: ID!): String!
+  activate(id: ID!): String!
+  createAccount(createAccountInput: CreateAccountInput!): Account!
+  updateAccount(id: Int!, updateAccountInput: UpdateAccountInput!): Account!
+  removeAccount(id: Int!): String!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  register(createUserInput: CreateUserInput!): TokenResponse!
+  login(loginInput: LoginInput!): TokenResponse!
+}
+
+input CreateCategoryInput {
+  name: String!
+  type: CategoryType
+  icon: String
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UpdateCategoryInput {
+  name: String
+  type: CategoryType
+  icon: String
+}
+
+input CreateAccountInput {
+  name: String!
+  type: AccountType!
+  balanceInCents: Int!
+  currency: String!
+  notes: String
+}
+
+input UpdateAccountInput {
+  name: String
+  type: AccountType
+  balanceInCents: Int
+  currency: String
+  notes: String
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  username: String
+  email: String
+  password: String
+  id: Int!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}

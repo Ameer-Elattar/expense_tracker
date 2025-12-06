@@ -1,0 +1,15 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  id: ID!
+  name: String!
+  slug: String!
+  image: String!
+  isActive: Boolean!
+}
+
+type Query {
+  getCategories: [Category!]!
+}
