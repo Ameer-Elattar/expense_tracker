@@ -7,6 +7,8 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { AccountType } from '../entities/account.entity';
+import { Transaction } from 'src/modules/transaction/model/transaction.model';
+import { CurrencyEnum } from 'src/common/utils/types';
 
 registerEnumType(AccountType, { name: 'AccountType' });
 
@@ -22,14 +24,23 @@ export class Account {
   type: AccountType;
 
   @Field(() => Int)
-  balanceInCents: number;
+  balance: number;
 
-  @Field(() => Float, { nullable: true })
-  balance?: number;
-
-  @Field()
-  currency: string;
+  @Field(() => CurrencyEnum)
+  currency: CurrencyEnum;
 
   @Field({ nullable: true })
   notes?: string;
+
+  @Field(() => Int)
+  userId: number;
+
+  @Field(() => [Transaction], { nullable: true })
+  transactions?: Transaction[];
+
+  @Field(() => Date)
+  createdDate: Date;
+
+  @Field(() => Date)
+  updatedDate: Date;
 }

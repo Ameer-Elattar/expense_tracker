@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserInput } from '../user/dto/create-user.input';
 import { JwtService } from '@nestjs/jwt';
-import { JWTPayloadType } from 'src/common/utils/types';
+import { UserPayloadType } from 'src/common/utils/types';
 import { LoginInput } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../user/entities/user.entity';
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   private async createToken(user: User) {
-    const payload: JWTPayloadType = { id: user.id, username: user.username };
+    const payload: UserPayloadType = { id: user.id, username: user.username };
     const accessToken = await this.jwtService.signAsync(payload);
     return { accessToken };
   }

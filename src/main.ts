@@ -8,7 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use('/images', express.static(join(process.cwd(), 'images')));
 
-  // middleware that make graphql accept multipart
   app.use(
     graphqlUploadExpress({
       maxFileSize: 2 * 1024 * 1024,

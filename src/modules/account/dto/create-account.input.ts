@@ -1,6 +1,7 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { InputType, Field, Float } from '@nestjs/graphql';
 import { AccountType } from '../entities/account.entity';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { CurrencyEnum } from 'src/common/utils/types';
 
 @InputType()
 export class CreateAccountInput {
@@ -12,13 +13,13 @@ export class CreateAccountInput {
   @IsEnum(AccountType)
   type: AccountType;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @IsNumber()
-  balanceInCents: number;
+  balance: number;
 
-  @Field()
   @IsString()
-  currency: string;
+  @Field(() => CurrencyEnum)
+  currency: CurrencyEnum;
 
   @Field({ nullable: true })
   @IsOptional()

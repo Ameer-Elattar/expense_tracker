@@ -11,35 +11,39 @@ export class AccountService {
     @InjectRepository(Account)
     private readonly accountRepo: Repository<Account>,
   ) {}
-  create(createAccountInput: CreateAccountInput) {
-    const account = this.accountRepo.create(createAccountInput);
+  create(createAccountInput: CreateAccountInput, currentUserId: number) {
+    const account = this.accountRepo.create({
+      ...createAccountInput,
+      balance: createAccountInput.balance * 100,
+      userId: currentUserId,
+    });
     return this.accountRepo.save(account);
   }
 
-  findAll() {
-    return this.accountRepo.find();
+  findAll(currentUserId: number) {
+    return this.accountRepo.find({ where: { userId: currentUserId } });
   }
 
-  async findOne(id: number) {
-    const record = await this.accountRepo.findOne({ where: { id } });
-    if (!record) throw new NotFoundException('Account Not found');
-    return record;
-  }
-
-  async update(id: number, updateAccountInput: UpdateAccountInput) {
-    const record = await this.accountRepo.preload({
-      id,
-      ...updateAccountInput,
+  async findOne(id: number, currentUserId: number) {
+    const account = await this.accountRepo.findOne({
+      where: { id, userId: currentUserId },
     });
-    if (!record) {
-      throw new NotFoundException('Account not found');
-    }
-
-    return this.accountRepo.save(record);
+    if (!account) throw new NotFoundException('Account Not found');
+    return account;
   }
 
-  async remove(id: number) {
-    const record = await this.findOne(id);
+  async update(
+    id: number,
+    updateAccountInput: UpdateAccountInput,
+    currentUserId: number,
+  ) {
+    const account = await this.findOne(id, currentUserId);
+    this.accountRepo.merge(account, updateAccountInput);
+    return this.accountRepo.save(account);
+  }
+
+  async remove(id: number, currentUserId: number) {
+    const record = await this.findOne(id, currentUserId);
     await this.accountRepo.remove(record);
     return 'Account Deleted';
   }

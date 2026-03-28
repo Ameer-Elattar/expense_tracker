@@ -1,9 +1,12 @@
 import { CurrencyEnum } from 'src/common/utils/types';
 import { Transaction } from 'src/modules/transaction/entities/transaction.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,13 +30,20 @@ export class Account {
   type: AccountType;
 
   @Column({ type: 'int' })
-  balanceInCents: number;
+  balance: number;
 
   @Column()
   currency: CurrencyEnum;
 
   @Column({ nullable: true })
   notes?: string;
+
+  @ManyToOne(() => User, (user) => user.accounts)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @Column({ name: 'user_id', nullable: true })
+  userId: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction)
   transactions: Transaction[];

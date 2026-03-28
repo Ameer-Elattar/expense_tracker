@@ -1,7 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Request } from 'express';
 
-export type JWTPayloadType = {
+export type UserPayloadType = {
   id: number;
   username: string;
 };
@@ -15,17 +15,9 @@ export class TokenResponse {
 export interface GqlContext {
   req: Request;
 }
-
 export enum CurrencyEnum {
   EGP = 'egp',
   USD = 'usd',
   SAR = 'sar',
 }
 registerEnumType(CurrencyEnum, { name: 'CurrencyEnum' });
-
-export enum TransactionType {
-  EXPENSE = 'expense',
-  INCOME = 'income',
-  TRANSFER = 'transfer',
-}
-registerEnumType(TransactionType, { name: 'TransactionType' });

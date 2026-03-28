@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { GqlContext, JWTPayloadType } from '../utils/types';
+import { GqlContext, UserPayloadType } from '../utils/types';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
@@ -31,7 +31,6 @@ export class AuthGuard implements CanActivate {
 
     const ctx = GqlExecutionContext.create(context);
     const { req } = ctx.getContext<GqlContext>();
-    console.log('REQ:', req.headers);
 
     const authHeader: string | undefined = req?.headers?.authorization;
     if (!authHeader) {
@@ -45,9 +44,12 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload: JWTPayloadType = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
+      const payload: UserPayloadType = await this.jwtService.verifyAsync(
+        token,
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+        },
+      );
 
       req['user'] = payload;
 

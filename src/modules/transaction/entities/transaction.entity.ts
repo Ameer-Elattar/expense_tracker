@@ -1,4 +1,4 @@
-import { CurrencyEnum, TransactionType } from 'src/common/utils/types';
+import { CurrencyEnum } from 'src/common/utils/types';
 import { Account } from 'src/modules/account/entities/account.entity';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { User } from 'src/modules/user/entities/user.entity';
@@ -11,14 +11,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+export enum TransactionType {
+  EXPENSE = 'expense',
+  INCOME = 'income',
+  TRANSFER = 'transfer',
+}
 @Entity()
 export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  amountInCents: number;
+  amount: number;
 
   @Column({ type: 'enum', enum: CurrencyEnum })
   currency: CurrencyEnum;
@@ -26,8 +30,8 @@ export class Transaction {
   @Column({ type: 'enum', enum: TransactionType })
   type: TransactionType;
 
-  @Column({ type: 'date' })
-  date: string;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: Date;
 
   @Column({ nullable: true })
   description?: string;
@@ -36,15 +40,22 @@ export class Transaction {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column({ name: 'user_id' })
+  userId: number;
+
   @ManyToOne(() => Account, (account) => account.transactions)
   @JoinColumn({ name: 'account_id' })
   account: Account;
 
-  @ManyToOne(() => Category, (category) => category.transactions, {
-    nullable: true,
-  })
+  @Column({ name: 'account_id' })
+  accountId: number;
+
+  @ManyToOne(() => Category, (category) => category.transactions)
   @JoinColumn({ name: 'category_id' })
-  category?: Category;
+  category: Category;
+
+  @Column({ name: 'category_id' })
+  categoryId: number;
 
   @Column({ name: 'linked_transaction_id', nullable: true })
   linkedTransactionId?: number;

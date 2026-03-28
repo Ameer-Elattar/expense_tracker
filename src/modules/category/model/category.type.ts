@@ -1,13 +1,6 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  PartialType,
-  registerEnumType,
-} from '@nestjs/graphql';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CategoryType } from '../entities/category.entity';
+import { User } from 'src/modules/user/model/user.model';
 
 registerEnumType(CategoryType, { name: 'CategoryType' });
 
@@ -22,30 +15,12 @@ export class Category {
   @Field()
   type: CategoryType;
 
-  @Field({ nullable: true })
-  icon?: string;
+  @Field(() => User)
+  user: User;
 
-  @Field({ nullable: true })
-  iconUrl?: string;
+  @Field()
+  userId: number;
 
   @Field()
   isActive: boolean;
 }
-
-@InputType()
-export class CreateCategoryInput {
-  @IsNotEmpty()
-  @Field()
-  name: string;
-
-  @IsEnum(CategoryType)
-  @IsOptional()
-  @Field(() => CategoryType, { nullable: true })
-  type?: CategoryType;
-
-  @Field({ nullable: true })
-  icon?: string;
-}
-
-@InputType()
-export class UpdateCategoryInput extends PartialType(CreateCategoryInput) {}

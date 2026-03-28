@@ -1,3 +1,5 @@
+import { Account } from 'src/modules/account/entities/account.entity';
+import { Category } from 'src/modules/category/entities/category.entity';
 import { Transaction } from 'src/modules/transaction/entities/transaction.entity';
 import {
   Column,
@@ -24,6 +26,12 @@ export class User {
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
+
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
+
+  @OneToMany(() => Account, (account) => account.user)
+  accounts: Account[];
 
   @CreateDateColumn()
   createdAt: Date;

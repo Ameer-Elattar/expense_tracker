@@ -27,11 +27,11 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.userRepo.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepo.findOne({ where: { id } });
   }
 
   findOneByEmail(email: string) {

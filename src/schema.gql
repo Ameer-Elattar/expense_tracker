@@ -2,24 +2,55 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Category {
-  id: ID!
-  name: String!
-  type: String!
-  icon: String
-  iconUrl: String
-  isActive: Boolean!
-  imageUrl: String
+type TokenResponse {
+  accessToken: String!
 }
+
+type Transaction {
+  id: ID!
+  amount: Float!
+  currency: CurrencyEnum!
+  type: TransactionType!
+  date: DateTime!
+  description: String
+  accountId: ID!
+  categoryId: ID!
+  linkedTransactionId: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  account: Account!
+  category: Category!
+}
+
+enum CurrencyEnum {
+  EGP
+  USD
+  SAR
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Account {
   id: ID!
   name: String!
   type: AccountType!
-  balanceInCents: Int!
-  balance: Float
-  currency: String!
+  balance: Int!
+  currency: CurrencyEnum!
   notes: String
+  userId: Int!
+  transactions: [Transaction!]
+  createdDate: DateTime!
+  updatedDate: DateTime!
+  user: User!
 }
 
 enum AccountType {
@@ -32,40 +63,48 @@ type User {
   id: ID!
   username: String!
   email: String!
+  accounts: [Account!]
+  transactions: [Transaction!]
+  categories: [Category!]
 }
 
-type TokenResponse {
-  accessToken: String!
+type Category {
+  id: ID!
+  name: String!
+  type: String!
+  user: User!
+  userId: Float!
+  isActive: Boolean!
 }
 
 type Query {
   categories: [Category!]!
   getCategory(id: ID!): Category!
+  users: [User!]!
+  user(id: Int!): User!
   accounts: [Account!]!
   account(id: Int!): Account!
-  user(id: Int!): User!
+  transactions: [Transaction!]!
+  transaction(id: Int!): Transaction!
 }
 
 type Mutation {
-  createCategory(category: CreateCategoryInput!, file: Upload): Category!
-  updateCategory(id: ID!, category: UpdateCategoryInput!, file: Upload): Category!
+  createCategory(category: CreateCategoryInput!): Category!
+  updateCategory(id: ID!, category: UpdateCategoryInput!): Category!
   delete(id: ID!): String!
   deactive(id: ID!): String!
   activate(id: ID!): String!
   createAccount(createAccountInput: CreateAccountInput!): Account!
   updateAccount(id: Int!, updateAccountInput: UpdateAccountInput!): Account!
   removeAccount(id: Int!): String!
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
   register(createUserInput: CreateUserInput!): TokenResponse!
   login(loginInput: LoginInput!): TokenResponse!
+  createTransaction(createTransactionInput: CreateTransactionInput!): Transaction!
 }
 
 input CreateCategoryInput {
   name: String!
-  type: CategoryType
-  icon: String
+  type: CategoryType!
 }
 
 enum CategoryType {
@@ -74,28 +113,24 @@ enum CategoryType {
   TRANSFER
 }
 
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
 input UpdateCategoryInput {
   name: String
   type: CategoryType
-  icon: String
 }
 
 input CreateAccountInput {
   name: String!
   type: AccountType!
-  balanceInCents: Int!
-  currency: String!
+  balance: Float!
+  currency: CurrencyEnum!
   notes: String
 }
 
 input UpdateAccountInput {
   name: String
   type: AccountType
-  balanceInCents: Int
-  currency: String
+  balance: Float
+  currency: CurrencyEnum
   notes: String
 }
 
@@ -105,14 +140,17 @@ input CreateUserInput {
   password: String!
 }
 
-input UpdateUserInput {
-  username: String
-  email: String
-  password: String
-  id: Int!
-}
-
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateTransactionInput {
+  amount: Int!
+  currency: CurrencyEnum!
+  type: TransactionType!
+  description: String
+  accountId: Int!
+  categoryId: Int!
+  linkedTransactionId: Int
 }

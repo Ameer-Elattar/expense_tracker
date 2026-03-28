@@ -8,67 +8,74 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { CategoryService } from './category.service';
-import {
-  Category,
-  CreateCategoryInput,
-  UpdateCategoryInput,
-} from './model/category.type';
+import { Category } from './model/category.type';
+import { CreateCategoryInput } from './dto/create-category.input';
+import { UpdateCategoryInput } from './dto/update-category.input';
 
-import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
-import { ConfigService } from '@nestjs/config';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserPayloadType } from 'src/common/utils/types';
+import { UserService } from '../user/user.service';
 @Resolver(() => Category)
 export class CategoryResolver {
   constructor(
     private readonly categoryService: CategoryService,
-    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   @Query(() => [Category], { name: 'categories' })
-  getCategories() {
-    return this.categoryService.findAll();
+  getCategories(@CurrentUser() user: UserPayloadType) {
+    return this.categoryService.findAll(user.id);
   }
   @Query(() => Category, { name: 'getCategory' })
-  getCategoryById(@Args('id', { type: () => ID }) id: number) {
-    return this.categoryService.findOne(id);
+  getCategoryById(
+    @Args('id', { type: () => ID }) id: number,
+    @CurrentUser() user: UserPayloadType,
+  ) {
+    return this.categoryService.findOne(id, user.id);
   }
 
   @Mutation(() => Category, { name: 'createCategory' })
   create(
     @Args('category') input: CreateCategoryInput,
-    @Args({ name: 'file', type: () => GraphQLUpload, nullable: true })
-    file: FileUpload,
+    @CurrentUser() user: UserPayloadType,
   ) {
-    return this.categoryService.create(input, file);
+    return this.categoryService.create(input, user.id);
   }
 
   @Mutation(() => Category, { name: 'updateCategory' })
   update(
     @Args('id', { type: () => ID }) id: number,
     @Args('category') input: UpdateCategoryInput,
-    @Args({ name: 'file', type: () => GraphQLUpload, nullable: true })
-    file: FileUpload,
+    @CurrentUser() user: UserPayloadType,
   ) {
-    return this.categoryService.update(id, input, file);
+    return this.categoryService.update(id, input, user.id);
   }
 
   @Mutation(() => String)
-  delete(@Args('id', { type: () => ID }) id: number) {
-    return this.categoryService.delete(id);
+  delete(
+    @Args('id', { type: () => ID }) id: number,
+    @CurrentUser() user: UserPayloadType,
+  ) {
+    return this.categoryService.delete(id, user.id);
   }
 
   @Mutation(() => String)
-  deactive(@Args('id', { type: () => ID }) id: number) {
-    return this.categoryService.deactivate(id);
+  deactive(
+    @Args('id', { type: () => ID }) id: number,
+    @CurrentUser() user: UserPayloadType,
+  ) {
+    return this.categoryService.deactivate(id, user.id);
   }
   @Mutation(() => String)
-  activate(@Args('id', { type: () => ID }) id: number) {
-    return this.categoryService.activate(id);
+  activate(
+    @Args('id', { type: () => ID }) id: number,
+    @CurrentUser() user: UserPayloadType,
+  ) {
+    return this.categoryService.activate(id, user.id);
   }
 
-  @ResolveField(() => String, { nullable: true })
-  imageUrl(@Parent() category: Category) {
-    if (!category.icon) return null;
-    const baseUrl = this.configService.get<string>('BASE_URL');
-    return `${baseUrl}/${category.icon}`;
+  @ResolveField()
+  user(@Parent() category: Category) {
+    return this.userService.findOne(category.userId);
   }
 }
