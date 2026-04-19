@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
@@ -14,7 +18,7 @@ export class CategoryService {
 
   findAll(currentUserId: number) {
     return this.categoryRepo.find({
-      where: { isActive: true, userId: currentUserId },
+      where: { userId: currentUserId },
     });
   }
 
@@ -28,7 +32,7 @@ export class CategoryService {
 
   async findOne(id: number, currentUserId: number) {
     const category = await this.categoryRepo.findOne({
-      where: { id, isActive: true, userId: currentUserId },
+      where: { id, userId: currentUserId },
     });
 
     if (!category) throw new NotFoundException('Category not Found');
@@ -43,7 +47,13 @@ export class CategoryService {
 
   async delete(id: number, currentUserId: number) {
     const category = await this.findOneOrFail(id, currentUserId);
-    await this.categoryRepo.remove(category);
+    try {
+      await this.categoryRepo.remove(category);
+    } catch (error) {
+      throw new BadRequestException(
+        'Category cannot be deleted it has transactions',
+      );
+    }
     return 'Category deleted';
   }
 

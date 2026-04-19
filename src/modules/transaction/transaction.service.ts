@@ -60,6 +60,8 @@ export class TransactionService {
     });
   }
   private async transferTransaction(txn: Transaction, manager: EntityManager) {
+    if (txn.categoryId)
+      throw new BadRequestException('Category is not allowed for transfer');
     const toAccount = await manager.findOne(Account, {
       where: { id: txn.linkedTransactionId },
       lock: { mode: 'pessimistic_write' },
@@ -86,6 +88,8 @@ export class TransactionService {
     txn: Transaction,
     manager: EntityManager,
   ) {
+    if (!txn.categoryId)
+      throw new BadRequestException('Category is required for income/expense');
     if (txn.type === TransactionType.EXPENSE) {
       if (txn.account.balance < txn.amount) {
         throw new BadRequestException('Insufficient balance for expense');

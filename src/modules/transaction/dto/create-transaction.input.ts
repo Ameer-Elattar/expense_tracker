@@ -36,10 +36,11 @@ export class CreateTransactionInput {
   @Min(1)
   accountId: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @IsInt()
   @Min(1)
-  categoryId: number;
+  @IsOptional()
+  categoryId?: number;
 
   @Field(() => Int, { nullable: true })
   @ValidateIf(

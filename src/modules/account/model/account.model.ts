@@ -38,9 +38,9 @@ export class Account {
   @Field(() => [Transaction], { nullable: true })
   transactions?: Transaction[];
 
-  @Field(() => Date)
-  createdDate: Date;
+  @Field(() => Date, { nullable: true })
+  createdDate?: Date;
 
-  @Field(() => Date)
-  updatedDate: Date;
+  @Field(() => Date, { nullable: true })
+  updatedDate?: Date;
 }

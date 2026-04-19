@@ -15,7 +15,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserPayloadType } from 'src/common/utils/types';
 import { User } from '../user/model/user.model';
 import { Account } from '../account/model/account.model';
-import { Category } from '../category/model/category.type';
+import { Category } from '../category/model/category.model';
 import { CategoryService } from '../category/category.service';
 import { UserService } from '../user/user.service';
 import { AccountService } from '../account/account.service';
@@ -62,11 +62,12 @@ export class TransactionResolver {
     return this.accountService.findOne(txn.accountId, currentUser.id);
   }
 
-  @ResolveField(() => Category)
+  @ResolveField(() => Category, { nullable: true })
   category(
     @Parent() txn: Transaction,
     @CurrentUser() currentUser: UserPayloadType,
   ) {
+    if (!txn.categoryId) return null;
     return this.categoryService.findOne(txn.categoryId, currentUser.id);
   }
 

@@ -4,6 +4,15 @@
 
 type TokenResponse {
   accessToken: String!
+  refreshToken: String!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  type: String!
+  userId: Float!
+  isActive: Boolean!
 }
 
 type Transaction {
@@ -19,7 +28,7 @@ type Transaction {
   createdAt: DateTime!
   updatedAt: DateTime!
   account: Account!
-  category: Category!
+  category: Category
 }
 
 enum CurrencyEnum {
@@ -48,8 +57,8 @@ type Account {
   notes: String
   userId: Int!
   transactions: [Transaction!]
-  createdDate: DateTime!
-  updatedDate: DateTime!
+  createdDate: DateTime
+  updatedDate: DateTime
   user: User!
 }
 
@@ -66,15 +75,6 @@ type User {
   accounts: [Account!]
   transactions: [Transaction!]
   categories: [Category!]
-}
-
-type Category {
-  id: ID!
-  name: String!
-  type: String!
-  user: User!
-  userId: Float!
-  isActive: Boolean!
 }
 
 type Query {
@@ -110,7 +110,6 @@ input CreateCategoryInput {
 enum CategoryType {
   INCOME
   EXPENSE
-  TRANSFER
 }
 
 input UpdateCategoryInput {
@@ -151,6 +150,6 @@ input CreateTransactionInput {
   type: TransactionType!
   description: String
   accountId: Int!
-  categoryId: Int!
+  categoryId: Int
   linkedTransactionId: Int
 }

@@ -19,7 +19,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
       autoSchemaFile: 'src/schema.gql',
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       includeStacktraceInErrorResponses: false,
-      context: ({ req }) => ({ req }),
+      context: ({ req, res }) => ({ req, res }),
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,

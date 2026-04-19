@@ -50,12 +50,14 @@ export class Transaction {
   @Column({ name: 'account_id' })
   accountId: number;
 
-  @ManyToOne(() => Category, (category) => category.transactions)
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'category_id' })
-  category: Category;
+  category?: Category;
 
-  @Column({ name: 'category_id' })
-  categoryId: number;
+  @Column({ name: 'category_id', nullable: true })
+  categoryId?: number;
 
   @Column({ name: 'linked_transaction_id', nullable: true })
   linkedTransactionId?: number;

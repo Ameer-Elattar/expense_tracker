@@ -9,9 +9,7 @@ import {
 } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { CurrencyEnum } from 'src/common/utils/types';
-import { Account } from 'src/modules/account/model/account.model';
-import { Category } from 'src/modules/category/model/category.type';
-import { User } from 'src/modules/user/model/user.model';
+
 import { TransactionType } from '../entities/transaction.entity';
 
 registerEnumType(TransactionType, { name: 'TransactionType' });

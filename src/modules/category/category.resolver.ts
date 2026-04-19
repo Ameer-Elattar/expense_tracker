@@ -8,7 +8,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { CategoryService } from './category.service';
-import { Category } from './model/category.type';
+import { Category } from './model/category.model';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 
@@ -72,10 +72,5 @@ export class CategoryResolver {
     @CurrentUser() user: UserPayloadType,
   ) {
     return this.categoryService.activate(id, user.id);
-  }
-
-  @ResolveField()
-  user(@Parent() category: Category) {
-    return this.userService.findOne(category.userId);
   }
 }
